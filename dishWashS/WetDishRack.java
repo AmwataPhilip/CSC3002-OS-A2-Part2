@@ -21,6 +21,7 @@ public class WetDishRack {
 			count = dish_id;
 			if (count == rackSize) {
 				synchronized (barrier) {
+					barrier2.wait();
 					barrier.notifyAll();
 				}
 			}
@@ -30,6 +31,23 @@ public class WetDishRack {
 			barrier.wait();
 			barrier.notify();
 		}
+		// ----------------------------
+		synchronized (sync) {
+			sync.wait();
+			count -= 1;
+			if (count == 0) {
+				synchronized (barrier) {
+					barrier.wait();
+					barrier2.notifyAll();
+				}
+			}
+			sync.notify();
+		}
+		synchronized (barrier) {
+			barrier2.wait();
+			barrier2.notify();
+		}
+
 	}
 
 	public int removeDish() throws InterruptedException {
