@@ -1,22 +1,53 @@
 package dishWashS;
+
 import java.util.concurrent.Semaphore;
 
 public class WetDishRack {
-	// add variables
+	private int rackSize;
+	private static int count = 0;
+	private final Semaphore barrier;
+	private final Semaphore barrier2;
 
 	WetDishRack(int rackSize) {
-	    // add correct code here 
+		this.rackSize = rackSize;
+		this.barrier = new Semaphore(0);
+		this.barrier2 = new Semaphore(1);
 	}
-	
-	public void addDish(int dish_id)  throws InterruptedException {
-		// add correct code here
+
+	public void addDish(int dish_id) throws InterruptedException {
+		Semaphore sync = new Semaphore(1);
+
+		synchronized (sync) {
+			count += 1;
+			if (count == rackSize) {
+				synchronized (barrier) {
+					barrier2.wait();
+					barrier.notifyAll();
+				}
+			}
+		}
+		synchronized (barrier) {
+			barrier.wait();
+			barrier.notify();
+		}
 	}
-	
+
 	public int removeDish() throws InterruptedException {
-		return 0; // replace with correct code here
+		Semaphore sync = new Semaphore(1);
+		synchronized (sync) {
+			count -= 1;
+			if (count == rackSize) {
+				synchronized (barrier) {
+					barrier.wait();
+					barrier2.notifyAll();
+				}
+			}
+		}
+		synchronized (barrier) {
+			barrier2.wait();
+			barrier2.notify();
+		}
+		return count; // replace with correct code here
 	}
-	
+
 }
-
-
-
