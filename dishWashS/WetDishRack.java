@@ -16,9 +16,9 @@ public class WetDishRack {
 
 	public void addDish(int dish_id) throws InterruptedException {
 		Semaphore sync = new Semaphore(1);
+		count = dish_id;
 
 		synchronized (sync) {
-			count += 1;
 			if (count == rackSize) {
 				synchronized (barrier) {
 					barrier2.wait();
@@ -37,13 +37,13 @@ public class WetDishRack {
 		synchronized (sync) {
 			count -= 1;
 			if (count == rackSize) {
-				synchronized (barrier) {
+				synchronized (barrier2) {
 					barrier.wait();
 					barrier2.notifyAll();
 				}
 			}
 		}
-		synchronized (barrier) {
+		synchronized (barrier2) {
 			barrier2.wait();
 			barrier2.notify();
 		}
