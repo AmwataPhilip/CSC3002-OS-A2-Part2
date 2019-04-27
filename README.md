@@ -1,6 +1,6 @@
 # OS Synchronization
 
-## Part 1
+## Part 2
 
 ## Author: Philip Amwata
 
