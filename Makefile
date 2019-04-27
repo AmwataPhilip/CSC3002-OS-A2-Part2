@@ -1,3 +1,6 @@
+# Modified by: Philip Amwata
+# Date: 27/04/2019
+
 JAVAC = javac
 .SUFFIXES: .java .class
 
